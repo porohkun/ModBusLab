@@ -4,14 +4,34 @@
  Author:	Poroh
 */
 
-// the setup function runs once when you press reset or power the board
+#include "Modbusino.h"
+#include "Button.h"
+
+#define MY_BUTTON 0x03
+
+/* Initialize the slave with the ID 1 */
+ModbusinoSlave _modbusinoSlave(1);
+
+uint16_t _registers[10] = { 0x05, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+
 void setup()
 {
+	pinMode(LED_BUILTIN, OUTPUT);
 
+	byte buttons[BTN_COUNT] = { MY_BUTTON, 0xff, 0xff, 0xff, 0xff };
+	Button.SetButtons(buttons);
+
+	_modbusinoSlave.setup(115200);
 }
 
-// the loop function runs over and over again until power down or reset
+
 void loop()
 {
+	Button.Loop();
+	digitalWrite(LED_BUILTIN, Button.GetState(MY_BUTTON) ? HIGH : LOW);
 
+	if (Button.GetDown(MY_BUTTON))
+		_registers[MY_BUTTON]++;
+
+	_modbusinoSlave.loop(_registers, 10);
 }
