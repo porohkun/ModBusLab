@@ -5,8 +5,25 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ModBusMaster"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="300" Width="300">
     <Grid>
-        <Button Width="120" Height="22" Content="Go" HorizontalAlignment="Center" VerticalAlignment="Center" Click="Button_Click"/>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="120"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.Column="0">
+            <Button Content="Read registers" Click="ReadRegisters_Click"/>
+            <Button Content="Write register" Click="WriteRegisters_Click"/>
+        </StackPanel>
+        <ItemsControl Grid.Column="1" ItemsSource="{Binding Registers}" AlternationCount="10">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,0,4">
+                        <TextBlock Width="10" Text="{Binding Path=(ItemsControl.AlternationIndex), RelativeSource={RelativeSource TemplatedParent}, FallbackValue=FAIL}"/>
+                        <TextBox Width="40" Text="{Binding Value}" Margin="4,0,0,0"/>
+                    </StackPanel>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
     </Grid>
 </Window>
